@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+@plugin "daisyui";/
+
+
+
+.button-menu {
+   
+    cursor: pointer;
+    position: absolute;
+    top: 5;
+    left: 5;
+    z-index: 3;
+    font-weight: 700;
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    -webkit-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+    -moz-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+    box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+}
+.option {
+    position: absolute;
+    bottom: 0;
+    left: 20;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 0;
+    width: 90px;
+    height: 30px;
+    cursor: pointer;
+    transition: all 0.8s;
+    color: #A7B0AB;
+    font-weight: 500;
+    box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+}
+.checkbox:checked~.option {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(50px);
+}
+.checkbox:hover~.button-menu,
+.checkbox:checked~.button-menu {
+    scale: 0.98;
+    box-shadow: none;
+
+}
+.checkbox:checked~.button-menu::after {
+    scale: .30;
+    box-shadow: none;
+}
+.checkbox:not(:checked)~.option {
+    box-shadow: none;
+}
+
+.checkbox:checked~.option-a {
+    transition-delay: 0.1s;
+   transform: translatey(-120px) translateX(10px);
+}
+
+.checkbox:checked~.option-b {
+    transition-delay: 0.2s;
+     transform: translateY(-65px) translateX(80px);
+    
+}
+
+.checkbox:checked~.option-c {
+     transition-delay: 0.3s;
+      transform: translateX(65px) translateY(-10px);
+   
+}
