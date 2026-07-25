@@ -11,9 +11,14 @@ import BillingPage from "./Pages/Content/BillingPage";
 import ReportsPage from "./Pages/Content/ReportsPage";
 import SettingsPage from "./Pages/Content/SettingsPage";
 import { useNavigate } from "react-router-dom";
-import ProtectedRoute from "./Pages/ProtectedRoute";
-import RegisterPage from "./Pages/RegisterPage";
-import LandingPage from "./Pages/LandingPage";
+import ProtectedRoute from "./Pages/MainPages/ProtectedRoute";
+import RegisterPage from "./Pages/MainPages/RegisterPage";
+import LandingPage from "./Pages/MainPages/LandingPage";
+import LoginPage from "./Pages/MainPages/LoginPage";
+import ResetPassword from "./Pages/MainPages/ResetPassword";
+import ForgetPassword from "./Pages/MainPages/ForgetPassword";
+import { Toaster } from "react-hot-toast";
+// import GuestRoute from "./Pages/MainPages/GuestRoute";
 
 export default function App() {
   return (
@@ -22,6 +27,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forget" element={<ForgetPassword />} />
+          <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route
             path="/admin"
             element={
@@ -32,15 +40,16 @@ export default function App() {
           >
             <Route index element={<DashboardPage />} />
             <Route path="client" element={<ClientsPage />} />
-            <Route path="Cases" element={<CasesPage />} />
-            <Route path="Hearing" element={<HearingsPage />} />
-            <Route path="Document" element={<DocumentsPage />} />
-            <Route path="Lawyer" element={<LawyersPage />} />
-            <Route path="Billing" element={<BillingPage />} />
-            <Route path="Report" element={<ReportsPage />} />
-            <Route path="Setting" element={<SettingsPage />} />
+            <Route path="cases" element={<CasesPage />} />
+            <Route path="hearing" element={<HearingsPage />} />
+            <Route path="document" element={<DocumentsPage />} />
+            <Route path="lawyer" element={<LawyersPage />} />
+            <Route path="billing" element={<BillingPage />} />
+            <Route path="report" element={<ReportsPage />} />
+            <Route path="setting" element={<SettingsPage />} />
           </Route>
         </Routes>
+        <Toaster />
       </BrowserRouter>
     </div>
   );

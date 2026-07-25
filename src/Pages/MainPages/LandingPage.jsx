@@ -9,7 +9,6 @@ import { CiTwitter } from "react-icons/ci";
 import { FiYoutube } from "react-icons/fi";
 import { Link, Navigate } from "react-router-dom";
 
-
 const C = {
   bg: "#1e2d28",
   bgLight: "#d4e6e1",
@@ -20,7 +19,13 @@ const C = {
   accent: "#c84b2a",
   border: "rgba(232,237,232,0.12)",
 };
-const NAV_LINKS = ["Home", "Features", "Pricing", "About", "Contact"];
+const NAV_LINKS = [
+  { name: "home", href: "#home" },
+  { name: "Features", href: "#Features" },
+  { name: "Pricing", href: "#pricing" },
+  { name: "About", href: "#About" },
+  { name: "Contact", href: "#Contact" },
+];
 
 const FEATURES = [
   {
@@ -68,7 +73,11 @@ const PLANS = [
     highlight: true,
   },
 ];
-
+const scrollToSection = (id) => {
+  document.getElementById(id)?.scrollIntoView({
+    behavior: "smooth",
+  });
+};
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState("Features");
   const [email, setEmail] = useState("");
@@ -352,8 +361,8 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
         <div className="max-w-6xl mx-auto px-6 pb-3 hidden md:flex justify-center gap-8 pt-3">
           {NAV_LINKS.map((link, i) => (
             <a
-              key={link}
-              href="#"
+              key={link.name}
+              href={link.href}
               style={{
                 color: i === 0 ? C.text : C.textMuted,
                 borderBottom: i === 0 ? `1px solid ${C.accent}` : "none",
@@ -367,7 +376,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
                 if (i !== 0) e.currentTarget.style.color = C.textMuted;
               }}
             >
-              {link}
+              {link.name}
             </a>
           ))}
         </div>
@@ -375,7 +384,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
       {/* Dashboard Section */}
       <div className="bg-[#1e2d28] border-b border-[rgba(232,237,232,0.12)]">
         <section className=" max-w-6xl mx-auto  px-6 pt-16 pb-20 flex flex-col md:flex-row items-center gap-12 ">
-          <div className="flex-1 min-w-0">
+          <div id="home" className=" flex-1 min-w-0">
             <h1 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-4xl md:text-5xl font-medium leading-[1.15] mb-5">
               Manage Your Law Firm
               <br />
@@ -416,7 +425,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
         </section>
       </div>
       {/* Features Section */}
-      <div className="bg-[#1e2d28] border-b border-[rgba(232,237,232,0.12)]">
+      <div id="Features" className="bg-[#1e2d28]  border-b border-[rgba(232,237,232,0.12)]">
         <section style={{ borderTop: `1px solid ${C.border}` }} className="py-20">
           <div className="max-w-6xl mx-auto px-6">
             <h2 style={{ fontFamily: "'Playfair Display', serif", color: C.text }} className="text-3xl md:text-4xl font-medium text-center mb-14">
@@ -453,7 +462,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
         </section>
       </div>
       {/* Dashboard Preview Section */}
-      <div className="bg-[#1e2d28] border-b border-[rgba(232,237,232,0.12)]">
+      <div id="pricing" className="bg-[#1e2d28]   border-b border-[rgba(232,237,232,0.12)]">
         <section style={{ borderTop: `1px solid ${C.border}` }} className="py-20">
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex items-center justify-between mb-10">
@@ -467,10 +476,13 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
                 Dashboard Preview
               </h2>
               <div className="flex gap-2">
-                {["Features", "Pricing"].map((t) => (
+                {["Features", "pricing"].map((t) => (
                   <button
                     key={t}
-                    onClick={() => setActiveTab(t)}
+                    onClick={() => {
+                      setActiveTab(t);
+                      scrollToSection(t.toLowerCase());
+                    }}
                     style={{
                       background: activeTab === t ? C.accent : "transparent",
                       color: activeTab === t ? "#fff" : C.textMuted,
@@ -575,7 +587,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
         </section>
       </div>
 
-      <section style={{ background: "#d4e6e1" }} className="py-20">
+      <section id="About" style={{ background: "#d4e6e1" }} className="py-20">
         <div className="max-w-6xl mx-auto px-6">
           <h2
             style={{
@@ -635,7 +647,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
           </div>
         </div>
       </section>
-      <section style={{ background: "#1e2d28" }} className="py-20">
+      <section id="Contact" style={{ background: "#1e2d28" }} className=" py-20">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h2
             style={{
@@ -679,7 +691,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
           </div>
         </div>
       </section>
-      <footer style={{ borderTop: `1px solid ${C.border}`, background: "#172320" }} className="py-14">
+      <footer style={{ borderTop: `1px solid ${C.border}`, background: "#172320" }} className=" py-14">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-10">
             <div className="col-span-2 md:col-span-1">
@@ -697,9 +709,19 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
                 Resources
               </p>
               <ul className="space-y-2">
-                {["Home", "Features", "Documents", "Pricing"].map((l) => (
+                {["home", "Features", "documents", "pricing"].map((l) => (
                   <li key={l}>
-                    <a href="#" style={{ color: C.textMuted, fontFamily: "'Inter', sans-serif" }} className="text-xs transition-colors" onMouseOver={(e) => (e.currentTarget.style.color = C.accent)} onMouseOut={(e) => (e.currentTarget.style.color = C.textMuted)}>
+                    <a
+                      style={{ color: C.textMuted, fontFamily: "'Inter', sans-serif" }}
+                      className="text-xs transition-colors"
+                      onMouseOver={(e) => (e.currentTarget.style.color = C.accent)}
+                      onMouseOut={(e) => (e.currentTarget.style.color = C.textMuted)}
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection(l);
+                      }}
+                    >
                       {l}
                     </a>
                   </li>
@@ -711,9 +733,20 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
                 Contact / CTA
               </p>
               <ul className="space-y-2">
-                {["Pricing", "About", "Contact"].map((l) => (
+                {["pricing", "About", "Contact"].map((l) => (
                   <li key={l}>
-                    <a href="#" style={{ color: C.textMuted, fontFamily: "'Inter', sans-serif" }} className="text-xs transition-colors" onMouseOver={(e) => (e.currentTarget.style.color = C.accent)} onMouseOut={(e) => (e.currentTarget.style.color = C.textMuted)}>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollToSection(l);
+                      }}
+                      key={l}
+                      href="#"
+                      style={{ color: C.textMuted, fontFamily: "'Inter', sans-serif" }}
+                      className="text-xs transition-colors"
+                      onMouseOver={(e) => (e.currentTarget.style.color = C.accent)}
+                      onMouseOut={(e) => (e.currentTarget.style.color = C.textMuted)}
+                    >
                       {l}
                     </a>
                   </li>
@@ -837,4 +870,3 @@ function Dashboard() {
     </div>
   );
 }
-

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
@@ -8,26 +8,43 @@ import { GoEye } from "react-icons/go";
 import { GoEyeClosed } from "react-icons/go";
 import { useState } from "react";
 import Particles from "./Particles";
+import * as Yup from "yup";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
   const [showPox, setShowPox] = useState(false);
-  const register = (values) => {
-    let domain = "http://localhost:1337";
-    let endPoint = "/api/auth/local/register";
+  const validationSchema = Yup.object({
+    username: Yup.string().min(3, "Username must be at least 3 characters").max(20, "Username must be less than 20 characters").required("Username is required"),
+    email: Yup.string().email("Please enter a valid email").required("Email is required"),
+    password: Yup.string().min(6, "Password must be at least 8 characters").required("Password is required"),
+  });
+  const register = async (values) => {
+    const { username, email, password, rememberMe } = values;
+    // console.log(values);
 
-    let url = domain + endPoint;
-    axios.post(url, values).then((res) => {
-      console.log(res.data.jwt);
-      localStorage.setItem("token", res.data.jwt);
-      console.log(localStorage.getItem("token"));
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    try {
+      const res = await axios.post("http://localhost:1337/api/auth/local/register", {
+        username,
+        email,
+        password,
+      });
+
+      if (rememberMe) {
+        localStorage.setItem("token", res.data.jwt);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      } else {
+        sessionStorage.setItem("token", res.data.jwt);
+        sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+
       navigate("/admin");
-    });
-  };
+    } catch (error) {
+      console.log(error);
 
+      alert(error.response?.data?.error?.message || "Something went wrong");
+    }
+  };
 
   return (
     <div className="w-full h-screen flex">
@@ -313,42 +330,45 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
               EXORA
             </h1>
           </div>
-          <p className="text-[16px] text-[#A7B0AB] px-6 py-2">Secure professional login</p>
+          <p className="text-[16px] text-[#A7B0AB] px-6 py-2">Secure professional Register</p>
           {/* FORM */}
           <div className="flex flex-col px-3">
-            <Formik onSubmit={register} initialValues={{ username: "", email: "", password: "" }}>
-              <Form className=" w-100 flex flex-col gap-3 p-4 ">
-                <h1 className="text-[#F5F2EC]  font-bold  text-[14px]">Email Address</h1>
-                <Field name="email" className=" input w-full h-[47.9883px] rounded-2xl text-[#A7B0AB] placeholder:text-[#A7B0AB] pl-7" placeholder="attorney@lexora.legal" style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }}></Field>
-                <h1 className="text-[#F5F2EC] font-bold text-[14px] pt-2">Password</h1>
-                <div className="relative">
-                  <Field name="password" type={showPassword ? "text" : "password"} className="input w-full h-[47.9883px] rounded-2xl placeholder:text-[#A7B0AB]  text-[#A7B0AB]  pl-7 " style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }} placeholder="••••••••" />
-
-                  <span onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-white">
-                    {showPassword ? <GoEye /> : <GoEyeClosed />}
-                  </span>
-                </div>
-                <h1 className="text-[#F5F2EC] font-bold text-[14px] pt-2">User Name</h1>
-                <Field name="username" className=" input w-full h-[47.9883px] rounded-2xl text-[#A7B0AB] placeholder:text-[#A7B0AB] pl-7" style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }} placeholder="User Name"></Field>
-                <div className="flex justify-between">
-                  <div className="text-[#A7B0AB] text-[14px] flex gap-2">
-                    <span onClick={() => setShowPox(!showPox)}>{showPox ? <MdCheckBox className="mt-1" /> : <MdCheckBoxOutlineBlank className="mt-1" />}</span>
-                    Remember Me
+            <Formik validationSchema={validationSchema} onSubmit={register} initialValues={{ username: "", email: "", password: "", rememberMe: false }}>
+              {({ values, setFieldValue }) => (
+                <Form className=" w-100 flex flex-col gap-3 p-4 ">
+                  <h1 className="text-[#F5F2EC]  font-bold  text-[14px]">Email Address</h1>
+                  <Field name="email" className=" input w-full h-[47.9883px] rounded-2xl text-[#A7B0AB] placeholder:text-[#A7B0AB] pl-7" placeholder="attorney@lexora.legal" style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }}></Field>
+                  <ErrorMessage name="email" component="div" className="text-red-400 text-sm " /> <h1 className="text-[#F5F2EC] font-bold text-[14px] pt-2">Password</h1>
+                  <div className="relative">
+                    <Field name="password" type={showPassword ? "text" : "password"} className="input w-full h-[47.9883px] rounded-2xl placeholder:text-[#A7B0AB]  text-[#A7B0AB]  pl-7 " style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }} placeholder="••••••••" />
+                    <span onClick={() => setShowPassword(!showPassword)} className="absolute z-10 right-4 top-1/2 -translate-y-1/2 cursor-pointer text-white">
+                      {showPassword ? <GoEye className="text-[#A7B0AB]" /> : <GoEyeClosed className="text-[#A7B0AB]" />}
+                    </span>
                   </div>
-                  <div className="text-[#F05A22] text-[14px]">Forgot Password?</div>
-                </div>
-
-                <button
-                  //   to="/"
-                  type="submit"
-                  // to="/admin"
-                  className="  w-full h-[47.9883px] bg-[#F05A22] rounded-2xl text-[16px] font-bold text-[#F5F2EC] gap-3 flex justify-center items-center"
-                  style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }}
-                >
-                 Create Account
-                  <IoIosArrowForward className="text-[#F5F2EC] " />
-                </button>
-              </Form>
+                  <ErrorMessage name="password" component="div" className="text-red-400 text-sm " />
+                  <h1 className="text-[#F5F2EC] font-bold text-[14px] pt-2">User Name</h1>
+                  <Field name="username" className=" input w-full h-[47.9883px] rounded-2xl text-[#A7B0AB] placeholder:text-[#A7B0AB] pl-7" style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }} placeholder="User Name"></Field>
+                  <div className="flex justify-between">
+                    {/*  Remember Me */}
+                    <div className="text-[#A7B0AB] text-[14px] flex gap-2 cursor-pointer" onClick={() => setFieldValue("rememberMe", !values.rememberMe)}>
+                      {values.rememberMe ? <MdCheckBox className="mt-1" /> : <MdCheckBoxOutlineBlank className="mt-1" />}
+                      Remember Me
+                    </div>
+                    <ErrorMessage name="username" component="div" className="text-red-400 text-sm " />
+                    <div className="text-[#F05A22] text-[14px]">Forgot Password?</div>
+                  </div>
+                  <button
+                    type="submit"
+                    // to="/admin"
+                    className="  w-full h-[47.9883px] bg-[#F05A22] rounded-2xl text-[16px] font-bold text-[#F5F2EC] gap-3 flex justify-center items-center"
+                    style={{ border: "1px solid rgba(167, 176, 171, 0.3)" }}
+                  >
+                    Create Account
+                    <IoIosArrowForward className="text-[#F5F2EC] " />
+                  </button>
+                  <Link to="/login" className="text-[#A7B0AB] text-center hover:text-[#F05A22]">Are you have an accout </Link>
+                </Form>
+              )}
             </Formik>
           </div>
         </div>
@@ -356,7 +376,6 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
     </div>
   );
 }
-
 
 // Register ✔
 // JWT Returned ✔  by Strapi

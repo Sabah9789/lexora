@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import ExpandableSearchBar from "../../components/ui/expandable-search-bar";
 import { GooeyInput } from "../../components/ui/gooey-input";
 import { LuLayoutDashboard } from "react-icons/lu";
@@ -19,8 +19,26 @@ export default function AdminLayout() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/register");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    navigate("/login");
   };
+  const titles = {
+    dashboard: "Dashboard",
+    client: "Clients",
+    cases: "Cases",
+    hearing: "Hearings",
+    document: "Documents",
+    lawyer: "Lawyers",
+    billing: "Billing",
+    report: "Reports",
+    setting: "Setting",
+  };
+  const location = useLocation();
+  // [0] = ""
+  // [1] = "admin"
+  // [2] = "Cases"                                              (default value)          
+  const page = location.pathname.split("/")[2]?.toLowerCase() || "dashboard";  
 
   return (
     <div>
@@ -266,7 +284,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
               </g>
             </svg>
             <h1 className="text-[35px] pt-3 pl-1 text-[#CCD9D9] " style={{ fontFamily: "Cinzel Decorative, cursive" }}>
-              EXORA
+              EXORA 
             </h1>
           </div> 
           <div className="flex flex-col gap-5 px-5 py-5">
@@ -293,8 +311,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
               <CiUser />
               Profile
             </button>
-            <button onClick={handleLogout}
-             className="option-c option text-[#A7B0AB] font-bold  flex justify-center items-center gap-1">
+            <button onClick={handleLogout} className="option-c option text-[#A7B0AB] font-bold  flex justify-center items-center gap-1">
               <CiLogout />
               LOG OUT
             </button>
@@ -303,7 +320,7 @@ m-1438 -1679 c0 -5 -5 -3 -10 5 -5 8 -10 20 -10 25 0 6 5 3 10 -5 5 -8 10 -19
         <section className="w-full flex flex-col bg-[#021F19] ">
           <div className="h-[10%] flex justify-between items-center bg-[#132B25]" style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
             <h1 className="w-[20%] text-[#90A1B9] pl-10" style={{ fontFamily: "Cormorant Garamond, serif" }}>
-              LEXORA
+              LEXORA / {titles[page]}
             </h1>
             <span className=" w-[10%]">
               <ExpandableSearchBar expandDirection="left" width={250} placeholder="Search left..." onSearch={(q) => console.log("search left", q)} />

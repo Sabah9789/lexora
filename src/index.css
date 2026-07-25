@@ -4,7 +4,9 @@
 @plugin "daisyui";/
 
 
-
+html{
+    scroll-behavior:smooth;
+}
 
 .button-menu {
    
